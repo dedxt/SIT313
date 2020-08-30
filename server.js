@@ -100,7 +100,7 @@ app.post("/register", async (req, res) => {
     else if (err.message.includes("password"))
       message = "password length must be greater than 8";
     else if (err.message.includes("mobile"))
-      message = "mobile should be of length 10";
+      message = "mobile should be of length 9";
 
     res.json({
       message,

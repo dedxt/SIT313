@@ -43,7 +43,7 @@ const requesterSchema = mongoose.Schema({
   mobile: {
     type: Number,
     required: true,
-    min: 999999999,
+    min: 99999999,
   },
 });
 
