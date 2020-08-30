@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Requester = require("./models/requester");
+var bcrypt = require("bcryptjs");
 
 require("dotenv").config();
 app.use(cors());
@@ -68,14 +69,15 @@ app.post("/register", async (req, res) => {
     });
 
   try {
+    var hashedPassword = await bcrypt.hash(password, 10);
+
     const newRequester = new Requester({
       _id: mongoose.Types.ObjectId(),
       country,
       first_name,
       last_name,
       email,
-      password,
-      confirm_password,
+      password: hashedPassword,
       address,
       city,
       state,
