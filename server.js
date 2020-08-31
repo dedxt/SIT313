@@ -7,6 +7,28 @@ const bodyParser = require("body-parser");
 const Requester = require("./models/requester");
 var bcrypt = require("bcryptjs");
 
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(
+  "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"
+);
+
+const sendEmail = async (email, name) => {
+  const msg = {
+    to: email,
+    from: "dixitdr@live.in",
+    subject: "Hi " + name + ", Welcome to iCrowdTask",
+    text: "and easy to do anywhere, even with Node.js",
+    html:
+      '<h2 style="text-align: center; color: #00897b">iCrowdTask</h2><p style="text-align: center">You just created your account on iCrowdTask.</p><h3 style="text-align: center">Account details:</h3><p style="text-align: center">You can login on iCrowdTask with this <strong>email</strong> and <strong>password</strong> you chose at the time of registeration.</p><p style="text-align: center">Click on the link to visit the website: <a href="https://icrowd1.herokuapp.com/">iCrowdTask</a><p>',
+  };
+
+  try {
+    await sgMail.send(msg);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 require("dotenv").config();
 app.use(cors());
 
