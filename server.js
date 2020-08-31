@@ -34,10 +34,10 @@ db.on("error", (err) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(express.static(__dirname + "public"));
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the iCrowd Task Please register yourself on /register");
+  res.sendFile("public/home.html", { root: __dirname });
 });
 
 app.get("/register", (req, res) => {
@@ -46,6 +46,10 @@ app.get("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.sendFile("public/login.html", { root: __dirname });
+});
+
+app.get("/reqlogin", (req, res) => {
+  res.sendFile("public/reqlogin.html", { root: __dirname });
 });
 
 app.post("/register", async (req, res) => {
@@ -105,6 +109,31 @@ app.post("/register", async (req, res) => {
     res.json({
       message,
     });
+  }
+});
+
+app.use("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const data = await Requester.findOne({ email });
+    if (data == null) {
+      return res.json({
+        message: "User not found",
+      });
+    }
+    const passMatch = await bcrypt.compare(password, data.password);
+    if (passMatch == true) {
+      return res.json({
+        message: "login successful",
+      });
+    }
+
+    return res.json({
+      message: "Incorrect Username/Password",
+    });
+  } catch (err) {
+    console.log(err);
   }
 });
 

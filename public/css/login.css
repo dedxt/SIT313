@@ -1,0 +1,45 @@
+body {
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-20%);
+}
+.form-wrapper {
+  /* width: 50%; */
+  min-width: 40%;
+  width: auto;
+}
+
+.form-outer-div {
+  border: 1px lightgray solid;
+  padding: 20px;
+}
+
+.form-header-div {
+  padding-bottom: 20px;
+}
+
+.form-header-div label {
+  font-size: 2rem;
+}
+
+.form-header-div button {
+  float: right;
+}
+
+.login-button {
+  width: 100%;
+}
+
+.error-div {
+  text-align: center;
+  color: red;
+  font-size: 1.7rem;
+}

@@ -1,0 +1,101 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="./css/login.css" />
+    <title>iCrowdTask</title>
+  </head>
+  <body>
+    <div class="container login-wrapper">
+      <div class="container form-wrapper">
+        <h2 class="register-form-title">iCrowdTask Login</h2>
+        <div
+          class="error-div"
+          id="error_div"
+        ></div>
+        <div class="form-outer-div">
+          <div class="form-header-div">
+            <label>Sign in</label>
+            <a href="/register">
+              <button type="button" class="btn btn-primary btn-sm">
+                Sign up
+              </button>
+            </a>
+          </div>
+          <form class="register-form">
+            <div class="form-group">
+              <label for="email">Your email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Your password</label>
+              <input
+                type="password"
+                class="form-control"
+                placeholder="****"
+                id="password"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary login-button"
+              id="login_btn"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      var email = document.getElementById("email");
+      var password = document.getElementById("password");
+      var login_btn = document.getElementById("login_btn");
+      var error_div = document.getElementById("error_div");
+
+      login_btn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        var userDetails = {
+          email: email.value,
+          password: password.value,
+        };
+        fetch("https://icrowd1.herokuapp.com/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDetails),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            error_div.innerHTML =
+              '<p class="bg-danger">***' + data.message + "***<p>";
+            if (data.message == "login successful")
+              window.location.href = "https://icrowd1.herokuapp.com/login";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    </script>
+  </body>
+</html>

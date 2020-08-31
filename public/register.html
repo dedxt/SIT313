@@ -409,6 +409,7 @@
           </div>
 
           <button
+            type="submit"
             class="btn btn-primary create-account-button"
             id="create-account-btn"
           >
@@ -474,6 +475,7 @@
         console.log(newRequester);
 
         fetch("https://icrowd1.herokuapp.com/register", {
+
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -485,6 +487,7 @@
             console.log(data);
             error_div.innerHTML =
               '<p class="bg-danger">***' + data.message + "***<p>";
+            window.location.href = "https://icrowd1.herokuapp.com/register";
           })
           .catch((error) => {
             console.error("Error:", error);
