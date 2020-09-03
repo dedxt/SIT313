@@ -8,9 +8,12 @@ const Requester = require("./models/requester");
 var bcrypt = require("bcryptjs");
 
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
+
+require("dotenv").config();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
 
 const sendEmail = async (email, name) => {
   const msg = {
