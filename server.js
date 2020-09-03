@@ -6,14 +6,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const Requester = require("./models/requester");
 var bcrypt = require("bcryptjs");
-
 const sgMail = require("@sendgrid/mail");
 
 require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-
 
 const sendEmail = async (email, name) => {
   const msg = {
@@ -32,7 +29,6 @@ const sendEmail = async (email, name) => {
   }
 };
 
-require("dotenv").config();
 app.use(cors());
 
 mongoose.connect(
@@ -115,6 +111,8 @@ app.post("/register", async (req, res) => {
     });
 
     const newOne = await newRequester.save();
+
+    sendEmail(email, first_name);
 
     return res.json({
       message: "requester registered",
