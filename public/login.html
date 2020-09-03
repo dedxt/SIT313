@@ -90,7 +90,7 @@
             error_div.innerHTML =
               '<p class="bg-danger">***' + data.message + "***<p>";
             if (data.message == "login successful")
-              window.location.href = "https://icrowd1.herokuapp.com/login";
+              window.location.href = "https://icrowd1.herokuapp.com/reqlogin";
           })
           .catch((error) => {
             console.error("Error:", error);
