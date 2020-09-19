@@ -135,6 +135,52 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
+app.post("/loginByGoogle", async (req, res) => {
+  console.log("login by google");
+  console.log(req.body);
+  let { first_name, last_name, id, email } = req.body;
+
+  try {
+    const dataFound = await Requester.findOne({ email });
+
+    if (dataFound != null) {
+      console.log(dataFound);
+      return res.json({
+        message: "user created via google auth",
+      });
+    }
+
+    let newRequester = new Requester({
+      _id: mongoose.Types.ObjectId(),
+      country: "Australia",
+      first_name,
+      last_name,
+      email,
+      password: id,
+      address: "Melbourne",
+      city: "Chdnioionl",
+      state: "Mej",
+      postal_code: 123456,
+      mobile: 123456789,
+    });
+
+    const newOne = await newRequester.save();
+
+    // sendEmail(email, first_name);
+
+    return res.json({
+      message: "user created via google auth",
+    });
+    // console.log(newOne);
+  } catch (err) {
+    res.json({
+      message: err,
+    });
+  }
+});
+
+
 app.use("/login", async (req, res) => {
   const { email, password } = req.body;
 

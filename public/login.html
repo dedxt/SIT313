@@ -14,15 +14,25 @@
     />
     <link rel="stylesheet" type="text/css" href="./css/login.css" />
     <title>iCrowdTask</title>
+    <title>iCrowdTask</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta
+      name="google-signin-client_id"
+      content="731688542844-0pucgk0nk3muievrg1ffg7pkt93on856.apps.googleusercontent.com"
+    />
   </head>
+  <style>
+    .g-signin2{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
   <body>
     <div class="container login-wrapper">
       <div class="container form-wrapper">
         <h2 class="register-form-title">iCrowdTask Login</h2>
-        <div
-          class="error-div"
-          id="error_div"
-        ></div>
+        <div class="error-div" id="error_div"></div>
         <div class="form-outer-div">
           <div class="form-header-div">
             <label>Sign in</label>
@@ -60,6 +70,7 @@
             >
               Login
             </button>
+            <div class="g-signin2" data-onsuccess="onSignIn" ></div>
           </form>
         </div>
       </div>
@@ -70,6 +81,41 @@
       var login_btn = document.getElementById("login_btn");
       var error_div = document.getElementById("error_div");
 
+      function onSignIn(googleUser) {
+        console.log("Google waala function");
+        var profile = googleUser.getBasicProfile();
+        var first_name = profile.getName().split(" ")[0];
+        var last_name = profile.getName().split(" ")[1];
+        var email = profile.getEmail();
+        var id = profile.getId();
+        // console.log("Image URL: " + profile.getImageUrl());
+        const userDetails = {
+          first_name,
+          last_name,
+          email,
+          id,
+        };
+
+        fetch("http://localhost:5000/loginByGoogle", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDetails),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            if (data.message == "user created via google auth")
+              window.location.href = "http://localhost:5000/reqlogin";
+            // else
+            //   error_div.innerHTML =
+            //     '<p class="bg-danger">***' + data.message + "***<p>";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
       login_btn.addEventListener("click", function (e) {
         e.preventDefault();
 
