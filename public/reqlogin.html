@@ -12,10 +12,37 @@
       href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="./css/reqlogin.css" />
     <title>iCrowd</title>
+    <script
+      src="https://apis.google.com/js/platform.js?onload=onLoad"
+      async
+      defer
+    ></script>
+    <meta
+      name="google-signin-client_id"
+      content="731688542844-0pucgk0nk3muievrg1ffg7pkt93on856.apps.googleusercontent.com"
+    />
   </head>
   <body>
     <h1>Successful login</h1>
+    <a href="#" onclick="signOut();">Sign out</a>
+
+    <script>
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          auth2.disconnect();
+        })
+        .then(()=>{
+          window.location.href = '/login'
+        });
+      }
+
+      function onLoad() {
+        gapi.load("auth2", function () {
+          gapi.auth2.init();
+        });
+      }
+    </script>
   </body>
 </html>
