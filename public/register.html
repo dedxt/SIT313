@@ -40,8 +40,7 @@
         font-weight: 400;
       }
 
-      .register-form {
-       }
+      
 
       .create-account-button {
         background-color: #00897b;
@@ -485,9 +484,12 @@
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
-            error_div.innerHTML =
-              '<p class="bg-danger">***' + data.message + "***<p>";
-            window.location.href = "https://icrowd1.herokuapp.com/reqlogin";
+           if (data.message === "requester registered") {
+              window.location.href = "http://localhost:5000/reqlogin";
+            } else {
+              error_div.innerHTML =
+                '<p class="bg-danger">***' + data.message + "***<p>";
+            }
           })
           .catch((error) => {
             console.error("Error:", error);
