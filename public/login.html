@@ -96,7 +96,7 @@
           id,
         };
 
-        fetch("http://localhost:5000/loginByGoogle", {
+        fetch("https://icrowd1.herokuapp.com/loginByGoogle", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@
           .then((data) => {
             console.log(data);
             if (data.message == "user created via google auth")
-              window.location.href = "http://localhost:5000/reqlogin";
+              window.location.href = "https://icrowd1.herokuapp.com/reqlogin";
             // else
             //   error_div.innerHTML =
             //     '<p class="bg-danger">***' + data.message + "***<p>";
