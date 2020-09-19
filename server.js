@@ -7,6 +7,8 @@ const bodyParser = require("body-parser");
 const Requester = require("./models/requester");
 var bcrypt = require("bcryptjs");
 const sgMail = require("@sendgrid/mail");
+const Worker = require("./models/worker");
+
 
 require("dotenv").config();
 
@@ -205,6 +207,184 @@ app.use("/login", async (req, res) => {
     console.log(err);
   }
 });
+// Worker Routes
+
+// TO ADD A WORKER
+
+app.post("/workers", async (req, res) => {
+  const { first_name, last_name, email, password, address, mobile } = req.body;
+
+  try {
+    var hashedPassword = await bcrypt.hash(password, 10);
+    const newWorker = new Worker({
+      _id: mongoose.Types.ObjectId(),
+      email,
+      first_name,
+      last_name,
+      password: hashedPassword,
+      address,
+      mobile,
+    });
+
+    const created = await newWorker.save();
+
+    console.log(created);
+
+    return res.json({
+      message: "worker added successfully",
+    });
+  } catch (err) {
+    // console.log(err.message);
+    let errorMessage = err.message;
+    if (err.message.includes("is required")) {
+      errorMessage = "Provide all the fields";
+    } else if (err.message.includes("duplicate key error")) {
+      errorMessage = "Email already exists";
+    }
+    res.json({
+      message: errorMessage,
+    });
+  }
+});
+
+// To get all the workers
+
+app.get("/workers", async (req, res) => {
+  let allWorkers;
+
+  try {
+    allWorkers = await Worker.find().select(
+      "first_name last_name email address mobile"
+    );
+    // console.log("all workers sent");
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: err,
+    });
+  }
+
+  res.json({
+    workers: [...allWorkers],
+  });
+});
+
+//To remove all workers
+
+app.delete("/workers", async (req, res) => {
+  try {
+    const deleteAll = await Worker.deleteMany({});
+
+    console.log("all workers deleted");
+
+    return res.json({
+      message: "all workers deleted",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+//To get a worker by Id
+
+app.get("/workers/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const dataFetched = await Worker.findOne({ _id: id }).select(
+      "first_name last_name email address mobile"
+    );
+
+    return res.json(dataFetched);
+  } catch (err) {
+    let errMessage = err.message;
+    if (err.message.includes("Cast to ObjectId failed"))
+      errMessage = "No object with this id";
+    res.json({
+      error: errMessage,
+    });
+  }
+});
+
+// To remove a worker by Id
+
+app.delete("/workers/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    let objectData = await Worker.deleteOne({ _id: id });
+    if (objectData.deletedCount == 0) {
+      return res.json({
+        message: "No worker with provided entry",
+      });
+    }
+    console.log(`worker deleted with id ${id}`);
+
+    return res.json({
+      message: `worker deleted with id ${id}`,
+    });
+  } catch (err) {
+    return res.json({
+      error: err.message,
+    });
+  }
+});
+
+//To update a worker by id
+
+app.patch("/workers/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const { address, mobile, old_password, new_password } = req.body;
+
+  try {
+    let updatedObject = {};
+    let updateMessage = "";
+    if (address !== undefined) {
+      updatedObject.address = address;
+      updateMessage += "address, ";
+    }
+    if (mobile !== undefined) {
+      updatedObject.mobile = mobile;
+      updateMessage += "mobile, ";
+    }
+    if (
+      new_password != undefined &&
+      old_password != undefined &&
+      old_password !== new_password
+    ) {
+      const workerData = await Worker.findById({ _id: id });
+      const workerHashPass = workerData.password;
+
+      let isPasswordSame = await bcrypt.compare(old_password, workerHashPass);
+      if (isPasswordSame) {
+        var hashedPassword = await bcrypt.hash(new_password, 10);
+        updatedObject.password = hashedPassword;
+        updateMessage += "password, ";
+      } else {
+        return res.json({
+          message: "Something is fishy. Wrong password entered",
+        });
+      }
+    }
+
+    updatedObject = await Worker.updateOne(
+      { _id: id },
+      { $set: updatedObject }
+    );
+
+    return res.json({
+      message: `${updateMessage}updated`,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
